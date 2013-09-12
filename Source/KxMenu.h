@@ -56,6 +56,12 @@
                fromRect:(CGRect)rect
               menuItems:(NSArray *)menuItems;
 
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+              menuItems:(NSArray *)menuItems
+		  dismissTarget:(id)dismissTarget
+		  dismissAction:(SEL)dismissAction;
+
 + (void) dismissMenu;
 
 + (UIColor *) tintColor;

@@ -151,12 +151,19 @@
     
     [KxMenu showMenuInView:self.view
                   fromRect:sender.frame
-                 menuItems:menuItems];
+                 menuItems:menuItems
+			 dismissTarget:self
+			 dismissAction:@selector(dismissed)];
 }
 
 - (void) pushMenuItem:(id)sender
 {
     NSLog(@"%@", sender);
+}
+
+- (void) dismissed
+{
+	NSLog(@"dismissed");
 }
 
 @end

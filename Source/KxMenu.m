@@ -44,6 +44,10 @@ const CGFloat kArrowSize = 12.f;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+@interface KxMenu ()
++ (void) callDismissAction;
+@end
+
 @interface KxMenuView : UIView
 @end
 
@@ -74,6 +78,7 @@ const CGFloat kArrowSize = 12.f;
                 && [v respondsToSelector:@selector(dismissMenu:)]) {
                 
                 [v performSelector:@selector(dismissMenu:) withObject:@(YES)];
+				[KxMenu callDismissAction];
             }
         }
     }
@@ -124,6 +129,8 @@ const CGFloat kArrowSize = 12.f;
 {
     __strong id target = self.target;
     
+	[KxMenu callDismissAction];
+
     if (target && [target respondsToSelector:_action]) {
         
         [target performSelectorOnMainThread:_action withObject:self waitUntilDone:YES];
@@ -761,6 +768,8 @@ typedef enum {
 static KxMenu *gMenu;
 static UIColor *gTintColor;
 static UIFont *gTitleFont;
+static __weak id _dismissTarget;
+static SEL _dismissAction;
 
 @implementation KxMenu {
     
@@ -818,9 +827,41 @@ static UIFont *gTitleFont;
                                                    object:nil];
     }
 
-    
+    _dismissTarget = nil;
+	_dismissAction = nil;
     _menuView = [[KxMenuView alloc] init];
     [_menuView showMenuInView:view fromRect:rect menuItems:menuItems];    
+}
+
+- (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+              menuItems:(NSArray *)menuItems
+		  dismissTarget:(id)dismissTarget
+		  dismissAction:(SEL)dismissAction
+{
+    NSParameterAssert(view);
+    NSParameterAssert(menuItems.count);
+    
+    if (_menuView) {
+        
+        [_menuView dismissMenu:NO];
+        _menuView = nil;
+    }
+	
+    if (!_observing) {
+		
+        _observing = YES;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationWillChange:)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
+                                                   object:nil];
+    }
+	
+    _dismissTarget = dismissTarget;
+	_dismissAction = dismissAction;
+    _menuView = [[KxMenuView alloc] init];
+    [_menuView showMenuInView:view fromRect:rect menuItems:menuItems];
 }
 
 - (void) dismissMenu
@@ -836,11 +877,25 @@ static UIFont *gTitleFont;
         _observing = NO;
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
+	
+	[KxMenu callDismissAction];
 }
 
 - (void) orientationWillChange: (NSNotification *) n
 {
     [self dismissMenu];
+}
+
++ (void) callDismissAction
+{
+	if ((_dismissTarget != nil) && (_dismissAction != nil)) {
+		_Pragma("clang diagnostic push")
+		_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")
+		[(NSObject*)_dismissTarget performSelector:_dismissAction];
+		_Pragma("clang diagnostic pop")
+	}
+	_dismissTarget = nil;
+	_dismissAction = nil;
 }
 
 + (void) showMenuInView:(UIView *)view
@@ -849,6 +904,16 @@ static UIFont *gTitleFont;
 {
     [[self sharedMenu] showMenuInView:view fromRect:rect menuItems:menuItems];
 }
+
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+              menuItems:(NSArray *)menuItems
+		  dismissTarget:(id)dismissTarget
+		  dismissAction:(SEL)dismissAction
+{
+    [[self sharedMenu] showMenuInView:view fromRect:rect menuItems:menuItems dismissTarget:dismissTarget dismissAction:dismissAction];
+}
+
 
 + (void) dismissMenu
 {
