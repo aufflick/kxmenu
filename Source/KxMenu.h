@@ -83,6 +83,18 @@
 		  dismissTarget:(id)dismissTarget
 		  dismissAction:(SEL)dismissAction;
 
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+		maxDisplayItems:(NSUInteger)maxDisplayItems
+              menuItems:(NSArray *)menuItems;
+
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+		maxDisplayItems:(NSUInteger)maxDisplayItems
+              menuItems:(NSArray *)menuItems
+		  dismissTarget:(id)dismissTarget
+		  dismissAction:(SEL)dismissAction;
+
 + (void) dismissMenu;
 
 + (UIColor *) tintColor;

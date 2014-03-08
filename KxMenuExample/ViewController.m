@@ -139,7 +139,67 @@
                      image:[UIImage imageNamed:@"search_icon"]
                     target:self
                     action:@selector(pushMenuItem:)],
-      
+
+      [KxMenuItem menuItem:@"Search2"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search3"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search4"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search5"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search6"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+/*
+      [KxMenuItem menuItem:@"Search7"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search8"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search81"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search82"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search83"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search84"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+
+      [KxMenuItem menuItem:@"Search85"
+                     image:[UIImage imageNamed:@"search_icon"]
+                    target:self
+                    action:@selector(pushMenuItem:)],
+*/
       [KxMenuItem menuItem:@"Go home"
                      image:[UIImage imageNamed:@"home_icon"]
                     target:self
@@ -152,6 +212,7 @@
     
     [KxMenu showMenuInView:self.view
                   fromRect:sender.frame
+		   maxDisplayItems:4
                  menuItems:menuItems
 			 dismissTarget:self
 			 dismissAction:@selector(dismissed)];

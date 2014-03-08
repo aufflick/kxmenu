@@ -211,6 +211,7 @@ typedef enum {
     KxMenuViewArrowDirection    _arrowDirection;
     CGFloat                     _arrowPosition;
     UIView                      *_contentView;
+	NSUInteger					_maxDisplayItems;
     NSArray                     *_menuItems;
 }
 
@@ -367,13 +368,15 @@ typedef enum {
 
 - (void)showMenuInView:(UIView *)view
               fromRect:(CGRect)rect
+	   maxDisplayItems:(NSUInteger)maxDisplayItems
              menuItems:(NSArray *)menuItems
 {
+	_maxDisplayItems = maxDisplayItems;
     _menuItems = menuItems;
     
     _contentView = [self mkContentView];
     [self addSubview:_contentView];
-    
+
     [self setupFrameInView:view fromRect:rect];
         
     KxMenuOverlay *overlay = [[KxMenuOverlay alloc] initWithFrame:view.bounds];
@@ -492,7 +495,13 @@ typedef enum {
     contentView.autoresizingMask = UIViewAutoresizingNone;
     contentView.backgroundColor = [UIColor clearColor];
     contentView.opaque = NO;
-    
+
+	UIScrollView* contentScrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
+	contentScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	contentScrollView.backgroundColor = [UIColor clearColor];
+	contentScrollView.opaque = NO;
+	[contentView addSubview:contentScrollView];
+
     CGFloat itemY = kMarginY * 2;
     NSUInteger itemNum = 0;
         
@@ -506,7 +515,7 @@ typedef enum {
         itemView.backgroundColor = [UIColor clearColor];        
         itemView.opaque = NO;
                 
-        [contentView addSubview:itemView];
+        [contentScrollView addSubview:itemView];
         
         if (menuItem.enabled) {
         
@@ -585,8 +594,16 @@ typedef enum {
         itemY += maxItemHeight;
         ++itemNum;
     }    
-    
-    contentView.frame = (CGRect){0, 0, maxItemWidth, itemY + kMarginY * 2};
+
+	CGFloat menuHeight = itemY + kMarginY * 2;
+	CGFloat maxMenuHeight = (_maxDisplayItems == 0) ? 999999.0f : (_maxDisplayItems * maxItemHeight);
+	if (menuHeight <= maxMenuHeight) {
+		contentScrollView.contentSize = CGSizeMake(1.0f, 1.0f);
+		contentView.frame = CGRectMake(0.0f, 0.0f, maxItemWidth, menuHeight);
+	} else {
+		contentScrollView.contentSize = CGSizeMake(1.0f, menuHeight);
+		contentView.frame = CGRectMake(0.0f, 0.0f, maxItemWidth, maxMenuHeight);
+	}
     
     return contentView;
 }
@@ -856,21 +873,22 @@ static SEL _dismissAction;
 
 - (void) showMenuInView:(UIView *)view
                fromRect:(CGRect)rect
+		maxDisplayItems:(NSUInteger)maxDisplayItems
               menuItems:(NSArray *)menuItems
 {
     NSParameterAssert(view);
     NSParameterAssert(menuItems.count);
-    
+
     if (_menuView) {
-        
+
         [_menuView dismissMenu:NO];
         _menuView = nil;
     }
 
     if (!_observing) {
-    
+
         _observing = YES;
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(orientationWillChange:)
                                                      name:UIApplicationWillChangeStatusBarOrientationNotification
@@ -880,38 +898,39 @@ static SEL _dismissAction;
     _dismissTarget = nil;
 	_dismissAction = nil;
     _menuView = [[KxMenuView alloc] init];
-    [_menuView showMenuInView:view fromRect:rect menuItems:menuItems];    
+    [_menuView showMenuInView:view fromRect:rect maxDisplayItems:maxDisplayItems menuItems:menuItems];
 }
 
 - (void) showMenuInView:(UIView *)view
                fromRect:(CGRect)rect
+		maxDisplayItems:(NSUInteger)maxDisplayItems
               menuItems:(NSArray *)menuItems
 		  dismissTarget:(id)dismissTarget
 		  dismissAction:(SEL)dismissAction
 {
     NSParameterAssert(view);
     NSParameterAssert(menuItems.count);
-    
+
     if (_menuView) {
-        
+
         [_menuView dismissMenu:NO];
         _menuView = nil;
     }
-	
+
     if (!_observing) {
-		
+
         _observing = YES;
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(orientationWillChange:)
                                                      name:UIApplicationWillChangeStatusBarOrientationNotification
                                                    object:nil];
     }
-	
+
     _dismissTarget = dismissTarget;
 	_dismissAction = dismissAction;
     _menuView = [[KxMenuView alloc] init];
-    [_menuView showMenuInView:view fromRect:rect menuItems:menuItems];
+    [_menuView showMenuInView:view fromRect:rect maxDisplayItems:maxDisplayItems menuItems:menuItems];
 }
 
 - (void) dismissMenu
@@ -952,7 +971,7 @@ static SEL _dismissAction;
                fromRect:(CGRect)rect
               menuItems:(NSArray *)menuItems
 {
-    [[self sharedMenu] showMenuInView:view fromRect:rect menuItems:menuItems];
+    [[self sharedMenu] showMenuInView:view fromRect:rect maxDisplayItems:0 menuItems:menuItems];
 }
 
 + (void) showMenuInView:(UIView *)view
@@ -961,7 +980,25 @@ static SEL _dismissAction;
 		  dismissTarget:(id)dismissTarget
 		  dismissAction:(SEL)dismissAction
 {
-    [[self sharedMenu] showMenuInView:view fromRect:rect menuItems:menuItems dismissTarget:dismissTarget dismissAction:dismissAction];
+    [[self sharedMenu] showMenuInView:view fromRect:rect maxDisplayItems:0 menuItems:menuItems dismissTarget:dismissTarget dismissAction:dismissAction];
+}
+
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+		maxDisplayItems:(NSUInteger)maxDisplayItems
+              menuItems:(NSArray *)menuItems
+{
+    [[self sharedMenu] showMenuInView:view fromRect:rect maxDisplayItems:maxDisplayItems menuItems:menuItems];
+}
+
++ (void) showMenuInView:(UIView *)view
+               fromRect:(CGRect)rect
+ 		maxDisplayItems:(NSUInteger)maxDisplayItems
+             menuItems:(NSArray *)menuItems
+		  dismissTarget:(id)dismissTarget
+		  dismissAction:(SEL)dismissAction
+{
+    [[self sharedMenu] showMenuInView:view fromRect:rect maxDisplayItems:maxDisplayItems menuItems:menuItems dismissTarget:dismissTarget dismissAction:dismissAction];
 }
 
 
