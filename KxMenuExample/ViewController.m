@@ -120,6 +120,7 @@
                     action:NULL],
             
       [KxMenuItem menuItem:@"Share this"
+					  font:[UIFont italicSystemFontOfSize:20.0f]
                      image:[UIImage imageNamed:@"action_icon"]
                     target:self
                     action:@selector(pushMenuItem:)],

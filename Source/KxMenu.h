@@ -38,6 +38,7 @@
 
 @property (readwrite, nonatomic, strong) UIImage *image;
 @property (readwrite, nonatomic, strong) NSString *title;
+@property (readwrite, nonatomic, strong) UIFont* font;
 @property (readwrite, nonatomic, weak) id target;
 @property (readwrite, nonatomic) SEL action;
 @property (readwrite, nonatomic, strong) UIColor *foreColor;
@@ -50,6 +51,19 @@
                    action:(SEL) action;
 
 + (instancetype) menuItem:(NSString *) title
+                    image:(UIImage *) image
+                   target:(id)target
+                   action:(SEL) action
+			contextObject:(NSObject*)contextObject;
+
++ (instancetype) menuItem:(NSString *) title
+					 font:(UIFont*)font
+                    image:(UIImage *) image
+                   target:(id)target
+                   action:(SEL) action;
+
++ (instancetype) menuItem:(NSString *) title
+					 font:(UIFont*)font
                     image:(UIImage *) image
                    target:(id)target
                    action:(SEL) action

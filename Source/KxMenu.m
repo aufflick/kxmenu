@@ -97,6 +97,7 @@ const CGFloat kArrowSize = 12.f;
                    action:(SEL) action
 {
     return [[KxMenuItem alloc] init:title
+							   font:nil
                               image:image
                              target:target
                              action:action
@@ -110,6 +111,36 @@ const CGFloat kArrowSize = 12.f;
 			contextObject:(NSObject*)contextObject
 {
     return [[KxMenuItem alloc] init:title
+							   font:nil
+                              image:image
+                             target:target
+                             action:action
+					  contextObject:contextObject];
+}
+
++ (instancetype) menuItem:(NSString *) title
+					 font:(UIFont*)font
+                    image:(UIImage *) image
+                   target:(id)target
+                   action:(SEL) action
+{
+    return [[KxMenuItem alloc] init:title
+							   font:font
+                              image:image
+                             target:target
+                             action:action
+					  contextObject:nil];
+}
+
++ (instancetype) menuItem:(NSString *) title
+					 font:(UIFont*)font
+                    image:(UIImage *) image
+                   target:(id)target
+                   action:(SEL) action
+			contextObject:(NSObject*)contextObject
+{
+    return [[KxMenuItem alloc] init:title
+							   font:font
                               image:image
                              target:target
                              action:action
@@ -117,6 +148,7 @@ const CGFloat kArrowSize = 12.f;
 }
 
 - (id) init:(NSString *) title
+	   font:(UIFont*)font
       image:(UIImage *) image
      target:(id)target
      action:(SEL) action
@@ -128,6 +160,7 @@ contextObject:(NSObject*)contextObject
     if (self) {
         
         _title = title;
+		_font = font;
         _image = image;
         _target = target;
         _action = action;
@@ -432,8 +465,8 @@ typedef enum {
     }
     
     for (KxMenuItem *menuItem in _menuItems) {
-
-        const CGSize titleSize = [menuItem.title sizeWithFont:titleFont];
+		UIFont* itemFont = (menuItem.font == nil) ? titleFont : menuItem.font;
+        const CGSize titleSize = [menuItem.title sizeWithFont:itemFont];
         const CGSize imageSize = menuItem.image.size;
 
         const CGFloat itemHeight = MAX(titleSize.height, imageSize.height) + kMarginY * 2;
@@ -464,7 +497,8 @@ typedef enum {
     NSUInteger itemNum = 0;
         
     for (KxMenuItem *menuItem in _menuItems) {
-                
+		UIFont* itemFont = (menuItem.font == nil) ? titleFont : menuItem.font;
+
         const CGRect itemFrame = (CGRect){0, itemY, maxItemWidth, maxItemHeight};
         
         UIView *itemView = [[UIView alloc] initWithFrame:itemFrame];
@@ -518,7 +552,7 @@ typedef enum {
             
             UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
             titleLabel.text = menuItem.title;
-            titleLabel.font = titleFont;
+            titleLabel.font = itemFont;
             titleLabel.textAlignment = menuItem.alignment;
             titleLabel.textColor = menuItem.foreColor ? menuItem.foreColor : [UIColor whiteColor];
             titleLabel.backgroundColor = [UIColor clearColor];
