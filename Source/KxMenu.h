@@ -44,6 +44,7 @@
 @property (readwrite, nonatomic, strong) UIColor *foreColor;
 @property (readwrite, nonatomic) NSTextAlignment alignment;
 @property (readwrite, nonatomic, strong) NSObject* contextObject;
+@property (readwrite, nonatomic) UIColor * imageTintColor;
 
 + (instancetype) menuItem:(NSString *) title
                     image:(UIImage *) image

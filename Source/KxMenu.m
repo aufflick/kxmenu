@@ -578,6 +578,7 @@ typedef enum {
             imageView.clipsToBounds = YES;
             imageView.contentMode = UIViewContentModeCenter;
             imageView.autoresizingMask = UIViewAutoresizingNone;
+            imageView.tintColor = menuItem.imageTintColor;
             [itemView addSubview:imageView];
         }
         
