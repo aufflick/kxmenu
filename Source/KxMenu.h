@@ -43,7 +43,7 @@
 @property (readwrite, nonatomic) SEL action;
 @property (readwrite, nonatomic, strong) UIColor *foreColor;
 @property (readwrite, nonatomic) NSTextAlignment alignment;
-@property (readwrite, nonatomic, strong) NSObject* contextObject;
+@property (readwrite, nonatomic, strong) id contextObject;
 @property (readwrite, nonatomic) UIColor * imageTintColor;
 
 + (instancetype) menuItem:(NSString *) title
@@ -55,7 +55,7 @@
                     image:(UIImage *) image
                    target:(id)target
                    action:(SEL) action
-			contextObject:(NSObject*)contextObject;
+			contextObject:(id)contextObject;
 
 + (instancetype) menuItem:(NSString *) title
 					 font:(UIFont*)font
@@ -68,7 +68,7 @@
                     image:(UIImage *) image
                    target:(id)target
                    action:(SEL) action
-			contextObject:(NSObject*)contextObject;
+			contextObject:(id)contextObject;
 
 @end
 
