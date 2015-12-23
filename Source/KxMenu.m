@@ -178,7 +178,8 @@ contextObject:(NSObject*)contextObject
 {
     __strong id target = self.target;
     
-	[KxMenu callDismissAction];
+    if (!self.doNotCloseOnTap)
+        [KxMenu callDismissAction];
 
     if (target && [target respondsToSelector:_action]) {
         
@@ -399,6 +400,15 @@ typedef enum {
    
 }
 
+- (void)setNeedsDisplay
+{
+    [super setNeedsDisplay];
+    
+    [_contentView removeFromSuperview];
+    _contentView = [self mkContentView];
+    [self addSubview:_contentView];
+}
+
 - (void)dismissMenu:(BOOL) animated
 {
     if (self.superview) {
@@ -432,10 +442,12 @@ typedef enum {
 
 - (void)performAction:(id)sender
 {
-    [self dismissMenu:YES];
-    
     UIButton *button = (UIButton *)sender;
     KxMenuItem *menuItem = _menuItems[button.tag];
+    
+    if (!menuItem.doNotCloseOnTap)
+        [self dismissMenu:YES];
+    
     [menuItem performAction];
 }
 
@@ -1006,6 +1018,16 @@ static SEL _dismissAction;
 + (void) dismissMenu
 {
     [[self sharedMenu] dismissMenu];
+}
+
++ (void)setNeedsDisplay
+{
+    [[self sharedMenu] setNeedsDisplay];
+}
+
+- (void)setNeedsDisplay
+{
+    [_menuView setNeedsDisplay];
 }
 
 + (UIColor *) tintColor

@@ -45,6 +45,7 @@
 @property (readwrite, nonatomic) NSTextAlignment alignment;
 @property (readwrite, nonatomic, strong) id contextObject;
 @property (readwrite, nonatomic) UIColor * imageTintColor;
+@property (nonatomic) BOOL doNotCloseOnTap;
 
 + (instancetype) menuItem:(NSString *) title
                     image:(UIImage *) image
@@ -97,6 +98,7 @@
 		  dismissAction:(SEL)dismissAction;
 
 + (void) dismissMenu;
++ (void) setNeedsDisplay;
 
 + (UIColor *) tintColor;
 + (void) setTintColor: (UIColor *) tintColor;
