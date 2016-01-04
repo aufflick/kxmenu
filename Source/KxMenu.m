@@ -49,6 +49,9 @@ const CGFloat kArrowSize = 12.f;
 @end
 
 @interface KxMenuView : UIView
+
+- (void)dismissMenu:(BOOL) animated;
+
 @end
 
 @interface KxMenuOverlay : UIView
@@ -481,7 +484,7 @@ typedef enum {
     
     for (KxMenuItem *menuItem in _menuItems) {
 		UIFont* itemFont = (menuItem.font == nil) ? titleFont : menuItem.font;
-        const CGSize titleSize = [menuItem.title sizeWithFont:itemFont];
+        const CGSize titleSize = [menuItem.title sizeWithAttributes:@{ NSFontAttributeName: itemFont }];
         const CGSize imageSize = menuItem.image.size;
 
         const CGFloat itemHeight = MAX(titleSize.height, imageSize.height) + kMarginY * 2;
